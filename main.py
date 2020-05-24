@@ -8,6 +8,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
 
 
@@ -105,13 +106,20 @@ def main(output_dir: str,
          username: str = None,
          password: str = None,
          nomura_url: str = None,
-         sleep_sec: int = 5):
+         sleep_sec: int = 5,
+         headless: bool = False):
+
+    options = Options()
+    if headless:
+        options.add_argument("--headless")
 
     profile = webdriver.FirefoxProfile()
     profile.set_preference("general.useragent.override",
                            "Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0")
     profile.set_preference("javascript.enabled", True)
-    driver = webdriver.Firefox(profile, executable_path=firefox_driver_path)
+    driver = webdriver.Firefox(firefox_profile=profile,
+                               options=options,
+                               executable_path=firefox_driver_path)
 
     if nomura_url is None:
         nomura_url = "https://www.nomuradirect.com/en/main/default.aspx"
